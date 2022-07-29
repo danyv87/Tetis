@@ -160,7 +160,7 @@ def CalcprofRaiz(usodesuelo):
 def calalmcharcos(usodesuelo):
     from osgeo import gdal
     import numpy as np
-    # Uso de suelo a profundidad de raiz
+    # Uso de suelo a almacenamiento en charcos
 
     directory_path = 'C:\\Users\\ASUS\\OneDrive\\Documents\\CIH\\Tetis\\'
     pathusodesuelo = directory_path + str(usodesuelo)  # nombre raster uso de suelo
