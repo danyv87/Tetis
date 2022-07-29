@@ -32,5 +32,19 @@ shp2 = gpd.read_file(path + "3_Zonal_Statistics_backup\\Zonal_P4_2014.shp")
 #operación
 bulkdensity = shp['max']
 ErosionTNperHa =bulkdensity * 1/(270*270/1000) * shp2['_max']
-shp['ErosionTNperHa']= ErosionTNperHa
+shp['ErosionTNperHa']= ErosionTNperHa*-1
 shp.to_file(filename=path + 'Varios\\Bulk_zonal.shp')
+
+Clasificacion = {'Class': ['Muy leve', 'Ligero', 'Moderado', 'Alto', 'Severo', 'Muy severo', 'Catastrófico'],
+                'Erosion rate (t/ha)': ['<2','2–5','5–10','10–50','50–100','100–500','>500']}
+
+df3 = pd.DataFrame()
+shp.loc[shp['ErosionTNperHa'].le(2), 'Ratio Erosion'] = 'Muy leve'
+shp.loc[shp['ErosionTNperHa'].ge(2) & shp['ErosionTNperHa'].le(5), 'Ratio Erosion'] = 'Ligero'
+shp.loc[shp['ErosionTNperHa'].ge(5) & shp['ErosionTNperHa'].le(10), 'Ratio Erosion'] = 'Moderado'
+shp.loc[shp['ErosionTNperHa'].ge(10) & shp['ErosionTNperHa'].le(50), 'Ratio Erosion'] = 'Alto'
+shp.loc[shp['ErosionTNperHa'].ge(50) & shp['ErosionTNperHa'].le(100), 'Ratio Erosion'] = 'Severo'
+shp.loc[shp['ErosionTNperHa'].ge(100) & shp['ErosionTNperHa'].le(500), 'Ratio Erosion'] = 'Muy severo'
+shp.loc[shp['ErosionTNperHa'].ge(500), 'Ratio Erosion'] = 'Catastrófico'
+shp.to_file(filename=path + 'Varios\\Bulk_zonal_borrar.shp')
+
