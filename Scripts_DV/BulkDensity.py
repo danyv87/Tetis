@@ -1,4 +1,4 @@
-def  ErosionClase(input_bulkdensity,input_OttonivelX,output_path,año,variable):
+def  ErosionClase(input_bulkdensity,input_OttonivelX,output_path,año,variable,path_zonal):
 
     #Convertir tif de densidad aparente de soilgrids a polygono Pfastetter
     import rasterio
@@ -22,18 +22,25 @@ def  ErosionClase(input_bulkdensity,input_OttonivelX,output_path,año,variable):
     stats=zonal_stats(shp, tif_array_flipped , affine=affine, stats=["max"],all_touched=True) #se asignan los valores maximos en la intersección con el shapefile
     stats = pd.DataFrame(stats)
     shp['max'] = stats['max']
-    shp.to_file(filename=output_path + variable + '_ErosionRate_' + año + '.shp')
+    #shp.to_file(filename=output_path + variable + '_ErosionRate_' + año + '.shp')
     #shp2=shp[["fid", "nunivotcda","cocursodag","cocdadesag", "max"]]
     #shp2.to_csv(path2 + años[i] + Param_label_ODS632[j] + '_zonal.csv')
 
     #importar erosión material parental
-    shp2 = gpd.read_file(output_path + "ErosionRate.shp")
+    shp2 = gpd.read_file(path_zonal + 'Zonal_' + variable + '_' + año + '.shp')
+    if año != '2014':
+        shp3 = gpd.read_file(path_zonal + 'Zonal_' + variable + '_' + str(int(año)-1) + '.shp')
 
     #operación
     bulkdensity = shp['max']
-    ErosionTNperHa =bulkdensity * 1/(270*270/1000) * shp2['_max']
-    shp['ErosionTNperHa']= ErosionTNperHa*-1
-    shp.to_file(filename=output_path + variable + '_ErosionRate_' + año + '.shp')
+    ErosionTNperHa = bulkdensity * 1/(270*270/1000) * shp2['_max']
+    shp['ErosionTNperHa'] = ErosionTNperHa * -1
+
+    if año != '2014':
+        ErosionTNperHa = ErosionTNperHa - (bulkdensity * 1/(270*270/1000) * shp3['_max'])*-1
+        shp['ErosionTNperHa'] = ErosionTNperHa * -1
+
+    #shp.to_file(filename=output_path + variable + '_ErosionRate_' + año + '.shp')
 
     Clasificacion = {'Class': ['Muy leve', 'Ligero', 'Moderado', 'Alto', 'Severo', 'Muy severo', 'Catastrófico'],
                     'Erosion rate (t/ha)': ['<2','2–5','5–10','10–50','50–100','100–500','>500']}
@@ -47,4 +54,6 @@ def  ErosionClase(input_bulkdensity,input_OttonivelX,output_path,año,variable):
     shp.loc[shp['ErosionTNperHa'].ge(100) & shp['ErosionTNperHa'].le(500), 'Ratio Erosion'] = 'Muy severo'
     shp.loc[shp['ErosionTNperHa'].ge(500), 'Ratio Erosion'] = 'Catastrófico'
     shp.to_file(filename=output_path + variable + '_ErosionRate_' + año + '.shp')
+
+    shp=[]
 
