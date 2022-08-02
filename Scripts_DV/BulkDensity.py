@@ -28,8 +28,6 @@ def  ErosionClase(input_bulkdensity,input_OttonivelX,output_path,año,variable,p
 
     #importar erosión material parental
     shp2 = gpd.read_file(path_zonal + 'Zonal_' + variable + '_' + año + '.shp')
-    if año != '2014':
-        shp3 = gpd.read_file(path_zonal + 'Zonal_' + variable + '_' + str(int(año)-1) + '.shp')
 
     #operación
     bulkdensity = shp['max']
@@ -37,7 +35,8 @@ def  ErosionClase(input_bulkdensity,input_OttonivelX,output_path,año,variable,p
     shp['ErosionTNperHa'] = ErosionTNperHa * -1
 
     if año != '2014':
-        ErosionTNperHa = ErosionTNperHa - (bulkdensity * 1/(270*270/1000) * shp3['_max'])*-1
+        shp3 = gpd.read_file(path_zonal + 'Zonal_' + variable + '_' + str(int(año) - 1) + '.shp')
+        ErosionTNperHa = ErosionTNperHa - (bulkdensity * 1/(270*270/1000) * shp3['_max'])
         shp['ErosionTNperHa'] = ErosionTNperHa * -1
 
     #shp.to_file(filename=output_path + variable + '_ErosionRate_' + año + '.shp')
