@@ -24,7 +24,6 @@ import pandas as pd
 import glob, re
 from collections import Counter
 
-path_asc='C:/Users/ASUS/Downloads/Proyecto_QGIS/Tetis_Incremental/layers/2_Ascii_Out_Tetis/'
 path_out= 'C:/Users/ASUS/Downloads/Proyecto_QGIS/Tetis_Incremental/layers/3_Zonal_Statistics/'
 path_tableau= 'C:/Users/ASUS/Downloads/Proyecto_QGIS/Tetis_Incremental/layers/4_Tableau/'
 

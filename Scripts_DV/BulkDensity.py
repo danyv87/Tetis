@@ -21,7 +21,7 @@ def  ErosionClase(input_bulkdensity,input_OttonivelX,output_path,año,variable,p
     #zonal statistics
     stats=zonal_stats(shp, tif_array_flipped , affine=affine, stats=["max"],all_touched=True) #se asignan los valores maximos en la intersección con el shapefile
     stats = pd.DataFrame(stats)
-    shp['max'] = stats['max']
+    shp['Bulkdensity_max'] = stats['max']
     #shp.to_file(filename=output_path + variable + '_ErosionRate_' + año + '.shp')
     #shp2=shp[["fid", "nunivotcda","cocursodag","cocdadesag", "max"]]
     #shp2.to_csv(path2 + años[i] + Param_label_ODS632[j] + '_zonal.csv')
